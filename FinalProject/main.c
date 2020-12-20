@@ -9,93 +9,21 @@ int main()
 {
     node_t *headNode = NULL;
     node_t *tempNode;
-    //int i;
-    char stringFromFile[100];
-    int j;
     int choice;
     bool loggedIn = false;
     guest_t *guestData;
+    int wantedBookId;
+    bool confirmBorrow = false;
+    int intConfirm;
 
-    /* Holder for token */
-    int idHolder;
-    char *titleHolder;
-    char *authorHolder;
-    int yearHolder;
-    bool availableHolder;
-    int intHolder;
-    /* END of holder */
+    headNode = importFile(headNode, tempNode);
 
-    //! START OF USING FILE
-    FILE *pFile = fopen("database.txt", "r"); //* Opens file in "R" or READ mode
+    printCrystalOfKnowledge();
 
-    while (!feof(pFile)) //! continue until reaching the end of file pFile
-    {
-        j = 1;
-        fgets(stringFromFile, 100, pFile);
-
-        //! START OF STRING SPLITTING
-        char *token = strtok(stringFromFile, ">"); //* strtok is for splitting strings into tokens,
-                                                   //* in this case we split when met with ">" character
-        while (token != NULL)
-        {
-            switch (j)
-            {
-            case 1:
-                //* id
-                idHolder = atoi(token);
-                break;
-
-            case 2:
-                //* title
-                titleHolder = token;
-                break;
-
-            case 3:
-                //* author
-                authorHolder = token;
-                break;
-
-            case 4:
-                //* release year
-                yearHolder = atoi(token);
-                break;
-
-            case 5:
-                //* available
-                intHolder = atoi(token);
-
-                if (intHolder = 0)
-                {
-                    availableHolder = false;
-                }
-                else
-                {
-                    availableHolder = true;
-                }
-                break;
-
-            default:
-                // default statements
-                break;
-            }
-            token = strtok(NULL, ">");
-            j++;
-        } //! END OF STRING SPLITTING
-
-        tempNode = createNode(idHolder, titleHolder, authorHolder, yearHolder, availableHolder); //* Create Node
-        headNode = insertAtHead(headNode, tempNode);                                             //* Insert at Head
-    }
-
-    fclose(pFile); //* CLOSES FILE
-                   //! END OF USING FILE
-
-    printf("\n\t\t\t=================================================\n");
-    printf("\t\t\t|                                               |\n");
-    printf("\t\t\t|        -----------------------------          |\n");
-    printf("\t\t\t|          = Crystal of Knowledge =             |\n");
-    printf("\t\t\t|        -----------------------------          |\n");
-    printf("\t\t\t|                                               |\n");
-    printf("\t\t\t=================================================\n\n\n");
+    printList(headNode);
+    headNode = reverseList(headNode);
+    printf("===================\n");
+    printList(headNode);
 
     printf("\t\t\t    Press any key to continue to main menu!\n");
     getch();
@@ -105,10 +33,11 @@ int main()
     printf("\n\n");
     printf("\t\t\t=====  WELCOME TO THE CRYSTAL OF KNOWLEDGE  =====\n\n");
     printf("\t\t\t\tPlease Input\n\n");
-    printf("\t\t\t=====  1 to Login\n\n");
+    printf("\t\t\t=====  1 to Login as administrator\n\n");
     printf("\t\t\t=====  2 to Enter as guest\n\n");
-
+    printf("\t\t\tEnter Input = ");
     scanf("%d", &choice);
+
     while ((getchar()) != '\n') /* Flush buffer */
         ;
 
@@ -119,12 +48,12 @@ int main()
     {
         while (loggedIn == false)
         {
-
             loggedIn = logIn(loggedIn);
 
             if (loggedIn == false)
             {
                 printf("Input 1 to reattempt login or 2 to login as guest!\n");
+                printf("\t\t\tEnter Input = ");
                 scanf("%d", &choice);
 
                 while ((getchar()) != '\n') /* Flush buffer */
@@ -150,64 +79,138 @@ int main()
     printf("\t\t\t    Press any key to continue to main menu!\n");
     getch();
 
-    system("cls");
-
-    //! MAIN MENU
-    printf("\t\t\t=====  WELCOME TO THE CRYSTAL OF KNOWLEDGE  =====\n\n\n");
-
-    printf("\t\t\t    __________________   __________________\n");
-    printf("\t\t\t.-/|                  \\ /                  |\\-.\n");
-    printf("\t\t\t||||      CRYSTAL      |                   ||||\n");
-    printf("\t\t\t||||                   |       WELCOME     ||||\n");
-    printf("\t\t\t||||    ============   |                   ||||\n");
-    printf("\t\t\t||||                   |      WILLKOMMEN   ||||\n");
-    printf("\t\t\t||||        OF         |                   ||||\n");
-    printf("\t\t\t||||                   |      BIENVENUE    ||||\n");
-    printf("\t\t\t||||    ============   |                   ||||\n");
-    printf("\t\t\t||||                   |     TERVETUOLA    ||||\n");
-    printf("\t\t\t||||     KNOWLEDGE     |                   ||||\n");
-    printf("\t\t\t||||                   |                   ||||\n");
-    printf("\t\t\t||||__________________ | __________________||||\n");
-    printf("\t\t\t||/===================\\|/===================\\||\n");
-    printf("\t\t\t`--------------------~___~-------------------''\n\n");
-
-    printf("\n\t\t\t=================================================\n");
-    printf("\t\t\t|         1.	Library Catalog                 |\n");
-    printf("\t\t\t|         2.	Borrow Book(s)                  |\n");
-    printf("\t\t\t|         3.	Information                     |\n");
-    printf("\t\t\t|         4.	Sign Out                        |\n");
-    printf("\t\t\t=================================================\n\n\n");
-
-    printf("\t\t\tEnter Input = ");
-    scanf("%d", &choice);
-
-    while ((getchar()) != '\n') /* Flush buffer */
-        ;
-
-    system("cls");
-
-    //!CHOICE
-    //TODO: Add While loop so if one case is done it returns to main menu
-    switch (choice)
+    //! CHOICE
+    //TODO: Encase in while loop so if one case is done it returns to main menu
+    while (choice != 5)
     {
-    case 1:
-        printf("\n===\tLibrary Catalog\t===\n\n");
-        printList(headNode);
-        break;
+        system("cls");
 
-    case 2:
+        //! MAIN MENU
+        printf("\t\t\t=====  WELCOME TO THE CRYSTAL OF KNOWLEDGE  =====\n");
+
+        if (loggedIn == true)
+        {
+            printf("\n\t\t\tHi Admin!\n");
+            printf("\t\t\tWhat would you like to do?\n\n");
+        }
+        else if (loggedIn == false)
+        {
+            printf("\n\t\t\tWelcome %s", guestData->name);
+            printf("\t\t\tWhat would you like to do?\n\n");
+        }
+
+        printf("\t\t\t    __________________    __________________\n");
+        printf("\t\t\t.-/|                  \\ /                  |\\-.\n");
+        printf("\t\t\t||||      CRYSTAL      |                   ||||\n");
+        printf("\t\t\t||||                   |       WELCOME     ||||\n");
+        printf("\t\t\t||||    ============   |                   ||||\n");
+        printf("\t\t\t||||                   |      WILLKOMMEN   ||||\n");
+        printf("\t\t\t||||        OF         |                   ||||\n");
+        printf("\t\t\t||||                   |      BIENVENUE    ||||\n");
+        printf("\t\t\t||||    ============   |                   ||||\n");
+        printf("\t\t\t||||                   |     TERVETUOLA    ||||\n");
+        printf("\t\t\t||||     KNOWLEDGE     |                   ||||\n");
+        printf("\t\t\t||||                   |                   ||||\n");
+        printf("\t\t\t||||__________________ | __________________||||\n");
+        printf("\t\t\t||/===================\\|/===================\\||\n");
+        printf("\t\t\t`--------------------~___~-------------------''\n\n");
+
+        printf("\t\t\t=================================================\n");
+        printf("\t\t\t|         1.	Library Catalog                 |\n");
+        printf("\t\t\t|         2.	Borrow Book(s)                  |\n");
+        printf("\t\t\t|         3.	Return Book(s)                  |\n");
+        printf("\t\t\t|         4.	Information                     |\n");
+        printf("\t\t\t|         5.	Sign Out                        |\n");
+        printf("\t\t\t=================================================\n");
+
+        printf("\t\t\tEnter Input = ");
+        scanf("%d", &choice);
+
+        while ((getchar()) != '\n') /* Flush buffer */
+            ;
+
+        system("cls");
+
         /* code */
-        break;
+        switch (choice)
+        {
+        case 1:
+            //* Print Catalog
+            printf("\n===\tLibrary Catalog\t===\n\n");
+            printList(headNode);
+            break;
 
-    case 3:
-        information();
-        break;
+        case 2:
+            //! BORROW BOOK
+            while (confirmBorrow != true)
+            {
+                printf("\n===\tLibrary Catalog\t===\n\n");
+                printList(headNode);
 
-    default:
-        break;
+                printf("Enter the ID of the book you want to borrow!\n");
+                scanf("%d", &wantedBookId);
+
+                while ((getchar()) != '\n') /* Flush buffer */
+                    ;
+
+                system("cls");
+
+                tempNode = findByBookId(headNode, wantedBookId); //* Find book ID
+                printBookData(tempNode);
+
+                printf("\nAre you sure you want to borrow %s?\n", tempNode->bookTitle);
+                printf("1. Yes, proceed\n2. No, I want to change book\n\n");
+
+                printf("Enter input: ");
+                scanf("%d", &intConfirm);
+
+                while ((getchar()) != '\n') /* Flush buffer */
+                    ;
+
+                //! Confirmed borrow
+                tempNode->isAvailable = false;
+                //TODO: FIX Update Database
+                //printDatabase(headNode);
+                // FILE *pTempFile = fopen("temp_database.txt", "w");
+
+                // fclose(pTempFile);
+                // remove("database.txt");
+                // rename("temp_database.txt", "database.txt");
+                //system("cls");
+
+                printReceipt(tempNode);
+
+                if (intConfirm == 1)
+                {
+                    confirmBorrow = true;
+                }
+
+                getch();
+                system("cls");
+            }
+
+            break;
+
+        case 3:
+            //TODO: returnBook()
+            break;
+
+        case 4:
+            information();
+            break;
+
+        case 5:
+            //* LOG OUT
+            loggedIn = false;
+            break;
+
+        default:
+            printf("You didn't input a number between 1 to 4, please input a number corresponding to the available coices!\n");
+            break;
+        }
+
+        printf("\n\t\t\t    Press any key to continue!\n");
+        getch();
     }
-
-    printf("\n\t\t\t    Press any key to continue to main menu!\n");
-    getch();
     return 0;
 }

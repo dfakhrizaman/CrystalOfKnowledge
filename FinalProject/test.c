@@ -1,93 +1,83 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-#include <conio.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <conio.h>
-#include "functions.h"
+
+//Sanditya Larope Sutanto
+//1906423183
+
+struct node
+{
+    int data;
+    struct node *nextPtr;
+};
+
+typedef struct node Node;
+typedef Node *NodePtr; //alias for the pointer of struct node
+
+void addNode(int data, NodePtr *headAddress);
+NodePtr reverseList(NodePtr headAddress);
+//function prototype
 
 int main()
 {
-    int idHolder;
-    char *titleHolder;
-    char *authorHolder;
-    int yearHolder;
-    bool availableHolder;
-    int intHolder;
-    /* END of holder */
+    int input;
+    NodePtr headAddress = NULL;
 
-    FILE *pFile = fopen("database.txt", "r"); //* Opens file in "R" or READ mode
-
-    while (!feof(pFile)) //! continue until reaching the end of file pFile
+    do
     {
-        j = 1;
-        // if (j > 5)
-        // {
-        //     j = 1;
-        // }
+        printf("\n\nEnter an Integer (-1 to Exit) : ");
+        scanf("%d", &input);
+        addNode(input, &headAddress);                       //add Node
+        NodePtr reversedHeadPtr = reverseList(headAddress); //Print the Linked List
 
-        fgets(stringFromFile, 100, pFile);
+    } while (input != -1);
+}
 
-        //! START OF STRING SPLITTING
-        char *token = strtok(stringFromFile, ">"); //* strtok is for splitting strings into tokens,
-                                                   //* in this case we split when met with ">" character
-        while (token != NULL)
+void addNode(int data, NodePtr *headAddress)
+{
+    NodePtr tmpAddress = malloc(sizeof(Node)); //allocate new address
+    tmpAddress->data = data;
+    tmpAddress->nextPtr = NULL;
+
+    tmpAddress->nextPtr = *headAddress;
+    headAddress = tmpAddress;
+}
+
+NodePtr reverseList(NodePtr headAddress)
+{
+    NodePtr tempHeadAddress = NULL;
+    if (headAddress != NULL)
+    {
+        printf("\nList berisi:\n");
+        NodePtr iteratorPtr = headAddress;
+        while (iteratorPtr != NULL)
         {
-            //printf("%s\n", token);
-
-            switch (j)
-            {
-            case 1:
-                // id
-                idHolder = atoi(token);
-                break;
-
-            case 2:
-                // title
-                titleHolder = token;
-                break;
-
-            case 3:
-                // author
-                authorHolder = token;
-                break;
-
-            case 4:
-                // release year
-                yearHolder = atoi(token);
-                break;
-
-            case 5:
-                // available
-                intHolder = atoi(token);
-                if (intHolder = 0)
-                {
-                    availableHolder = false;
-                }
-                else
-                {
-                    availableHolder = true;
-                }
-
-                break;
-
-            default:
-                // default statements
-                break;
-            }
-            token = strtok(NULL, ">");
-            j++;
-        } //! END OF STRING SPLITTING
-
-        // tempNode = createNode(idHolder, titleHolder, authorHolder, yearHolder, availableHolder); //* Create Node
-        // headNode = insertAtHead(headNode, tempNode);                                             //* Insert at Head
-        //insertAfterNode(headNode, createNode(idHolder, titleHolder, authorHolder, yearHolder, availableHolder));
-
-        printf("%d\n\n", tempNode->bookId);
+            addNode((iteratorPtr).data, &tempHeadAddress);
+            printf("%d  ", (iteratorPtr).data);
+            iteratorPtr = (iteratorPtr).nextPtr;
+        }
+        return tempHeadAddress;
     }
+    else
+    {
+        printf("List kosong\n");
+    }
+}
 
-    fclose(pFile); //* CLOSES FILE
-    return 0;
+void printList(NodePtr headAddress)
+{
+    if (headAddress != NULL)
+    {
+        printf("\nList berisi:\n");
+        NodePtr iteratorPtr = headAddress;
+        printf("\nreversed: ");
+        while (iteratorPtr != NULL)
+        {
+            printf("%d  ", (iteratorPtr).data);
+            iteratorPtr = (iteratorPtr).nextPtr;
+        }
+    }
+    else
+    {
+        printf("List kosong\n");
+    }
 }

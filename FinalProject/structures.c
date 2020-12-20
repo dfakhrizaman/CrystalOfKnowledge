@@ -1,12 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
-
-// typedef enum
-// {
-//     false = 0,
-//     true = 1
-// } bool;
+#include <time.h>
 
 /* BOOK STRUCT */
 struct node // linked list of Books
